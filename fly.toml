@@ -1,31 +1,34 @@
-app = "flyscale"
+# fly.toml app configuration file generated for olivers-vpn on 2023-12-22T01:28:19-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-primary_region = "nrt"
+app = "olivers-vpn"
+primary_region = "ewr"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
+
+[experimental]
 
 [build]
   image = "ghcr.io/spotsnel/flyscale:latest"
 
 [env]
-  PORT="41641"
-# create a reusable or ephemeral auth key
-# ephemeral auth key are not working for use as exit node as they are ipv6 only
-# flyctl secrets set TAILSCALE_AUTH_KEY=tskey-...
-
-[experimental]
-  auto_rollback = false
-  private_network = true
+  PORT = "41641"
 
 [[services]]
-  internal_port = 41641
   protocol = "udp"
+  internal_port = 41641
   processes = ["app"]
 
   [[services.ports]]
     port = 41641
-
   [services.concurrency]
     type = "connections"
     hard_limit = 100
     soft_limit = 75
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 1024
